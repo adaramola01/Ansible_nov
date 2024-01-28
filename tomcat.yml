@@ -27,7 +27,7 @@
 
     - name: Create Tomcat Directory
       file:
-        patha: '{{ user }}'
+        path: '{{ user }}'
         state: directory
         owner: '{{ user }}'
         group: '{{ user }}'
