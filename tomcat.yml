@@ -3,14 +3,14 @@
   hosts: nodes
 
   vars:
-    users: tomcat
-    path: /opt/tomcat
+    user : tomcat
+    path : /opt/tomcat
 
   tasks:
     - name: update package manager
       apt:
         upgrade: yes
-        update cache: yes
+        update_cache: yes
 
     - name: Install Java
       apt:
@@ -27,7 +27,7 @@
 
     - name: Create Tomcat Directory
       file:
-        path: '{{ user }}'
+        path: '{{ path }}'
         state: directory
         owner: '{{ user }}'
         group: '{{ user }}'
@@ -35,19 +35,19 @@
 
     - name: Download Tomcat and unarchive
       unarchive:
-        src: http://downloads.apache.org/tomcat/tomcat-9/v9.0.83/bin/apache-tomcat-9.0.83.tar.gz
-        dest: '{{ user }}'
-        remote src: yes
+        src: https://downloads.apache.org/tomcat/tomcat-9/v9.0.83/bin/apache-tomcat-9.0.83.tar.gz
+        dest: '{{ path }}'
+        remote_src: yes
 
-    - name: Change ownership to tomcat directory
+    - name: Change ownership pf tomcat directory
       file:
-        path: '{{ user }}'
+        path: '{{ path }}'
         recurse: yes
         owner: '{{ user }}'
         group: '{{ user }}'
         mode: u+rwx,g+rx,o+rx
 
-    - name: State tomcat
+    - name: Start tomcat
       command: nohup {{ path }}/apache-tomcat-9.0.83/bin/startup.sh
 
     - name: Allow TCP connections
@@ -55,9 +55,17 @@
 
     - name: Connect to Tomcat server on port 8080 and check status 200 - Try 5 times
       tags: test
-      uri: http://localhost:8080
+      uri:
+        url: http://localhost:8080
       register: result
-      until: "result.status ==200"
+      until: "result.status == 200"
       retries: 5
       delay: 10
+
+
+
+
+
+
+
 
