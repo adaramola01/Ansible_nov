@@ -3,14 +3,14 @@
   hosts: nodes
 
   vars:
-    user: tomcat
+    users: tomcat
     path: /opt/tomcat
 
   tasks:
     - name: update package manager
       apt:
         upgrade: yes
-        update_cache: yes
+        update cache: yes
 
     - name: Install Java
       apt:
@@ -27,7 +27,7 @@
 
     - name: Create Tomcat Directory
       file:
-        path: '{{ path }}'
+        patha: '{{ user }}'
         state: directory
         owner: '{{ user }}'
         group: '{{ user }}'
@@ -36,24 +36,19 @@
     - name: Download Tomcat and unarchive
       unarchive:
         src: http://downloads.apache.org/tomcat/tomcat-9/v9.0.83/bin/apache-tomcat-9.0.83.tar.gz
-        dest: '{{ path }}'
-        remote_src: yes
+        dest: '{{ user }}'
+        remote src: yes
 
-    - name: Change ownership of tomcat directory
+    - name: Change ownership to tomcat directory
       file:
-        path: '{{ path }}'
+        path: '{{ user }}'
         recurse: yes
         owner: '{{ user }}'
-        group:  '{{ user }}'
+        group: '{{ user }}'
         mode: u+rwx,g+rx,o+rx
 
-    - name: Start tomcat
+    - name: State tomcat
       command: nohup {{ path }}/apache-tomcat-9.0.83/bin/startup.sh
 
     - name: Allow TCP connections
       command: sudo ufw allow 8080/tcp
-
-
-
-
-
